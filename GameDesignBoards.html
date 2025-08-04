@@ -1,53 +1,90 @@
-<!-- Ethan Mitchell 7/13/25-->
- 
+<!-- Ethan Mitchell 8/3/25-->
 <!-- Tells browser this is a HTML5 compatible page -->
 <!DOCTYPE html>
-
-<!-- Reguiqred html opening tag -->
 <html lang="en">
 
-<!-- Info for browser and search engine 
-    Do not include content for user
-    Needs an opening & closing "head" tag -->
 <head>
-    
-    <!-- Any character that may be in the page -->
+    <!-- Metadata for character encoding and responsiveness -->
     <meta charset="UTF-8">
-    
-    <!-- For mobile devices to show the page better -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Title that appears in the browser tab -->
-    
+
+    <!-- Page title -->
     <title>Ethan Mitchell's Game Design Boards</title>
-</head>
 
-<!-- Everything we want the user to see in the body section
-    Needs an opening & closing "body" tag -->
-<body>
-    
-    <!-- Create a header section -->
-    <header>
-
-    <h1>Game Design Boards</h1>
-
-    <!-- Header text
-        H1 = header 1 
-        Progress numbers for additional "headers" that progressivly get smaller-->
-    <h1>Welcome to Ethan Mitchell's Game Design Boards</h1>
-
+    <!-- Link to external stylesheet -->
     <link rel="stylesheet" href="main.css">
 
+    <!-- JARVIS-themed internal CSS -->
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+            color: #00ffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        nav a {
+            color: #00ffff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover {
+            text-shadow: 0 0 10px #00ffff;
+        }
+        footer {
+            margin-top: 50px;
+            color: #00ffff;
+            font-size: 14px;
+        }
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #loadingText {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading overlay with animation -->
+    <div id="loadingOverlay">
+        <div id="loadingText">Initializing J.A.R.V.I.S Systems...</div>
+    </div>
+
+    <!-- Page header -->
+    <header>
+        <h1>Game Design Boards</h1>
+        <h1>Welcome to Ethan Mitchell's Game Design Boards</h1>
     </header>
 
-        <!-- Create a nav section to hold the menu -->
-        <nav>
-           <a href="Index.html">Home</a>
-           <br>
-           <a href="GameDesignBoards.html">Game Design Boards</a> 
-        </nav>
+    <!-- Navigation section -->
+    <nav>
+        <a href="Index.html">Home</a>
+        <br>
+        <a href="GameDesignBoards.html">Game Design Boards</a>
+    </nav>
 
-    <!-- This is a paragraph, default will have spacing before & after the "p" tags -->
+    <!-- Main content paragraph -->
     <p>
         1. Prototype and complete original games for multiple platforms following the full game production pipeline.<br><br>
         2. Create and implement game elements, systems and play mechanics using industry-standard tools, techniques and
@@ -62,14 +99,21 @@
         polished and completed projects.<br><br>
     </p>
 
+    <!-- Footer section -->
     <footer>
         Ethan Mitchell<br>
         University of Advancing Technology<br>
-        2625 W Baseline Rd,<br> 
+        2625 W Baseline Rd,<br>
         Tempe, AZ 85283
     </footer>
 
+    <!-- Script to hide loading overlay after delay -->
+    <script>
+        window.onload = function () {
+            setTimeout(() => {
+                document.getElementById("loadingOverlay").style.display = "none";
+            }, 2200);
+        };
+    </script>
 </body>
-
-<!-- Closing html tag needed at the end of every file -->
 </html>

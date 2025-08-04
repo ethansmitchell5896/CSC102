@@ -1,60 +1,225 @@
+<!-- Ethan Mitchell -->
 <!-- Tells browser this is a HTML5 compatible page -->
 <!DOCTYPE html>
 
-<!-- Reguiqred html opening tag -->
+<!-- Required html opening tag -->
 <html lang="en">
 
-<!-- Info for browser and search engine 
-    Do not include content for user
-    Needs an opening & closing "head" tag -->
+<!-- Info for browser and search engine -->
 <head>
-    
     <!-- Any character that may be in the page -->
     <meta charset="UTF-8">
-    
+
     <!-- For mobile devices to show the page better -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Title that appears in the browser tab -->
     <title>CSC102-EM Index</title>
 
-</head>
-
-<!-- Everything we want the user to see in the body section
-    Needs an opening & closing "body" tag -->
-<body>
-    
-    <header>
-
-    <!-- Header text
-        H1 = header 1 
-        Progress numbers for additional "headers" that progressivly get smaller-->
-    <h1>Welcome to 
-        Ethan Mitchell's CSC102 Page</h1>
-    
+    <!-- External CSS for styling -->
     <link rel="stylesheet" href="main.css">
 
+    <!-- Internal style for JARVIS-styled background and fonts -->
+    <style>
+        /* Main background, text, and font style */
+        body {
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+            color: #00ffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        /* Button styling */
+        button {
+            font-size: 18px;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #003b4f;
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* Styling for disabled buttons */
+        button:disabled {
+            background-color: #222;
+            color: #555;
+            border-color: #444;
+        }
+        /* Meme image styling and transition */
+        #memeImage {
+            position: absolute;
+            left: 10px;
+            top: 300px;
+            transition: left 0.8s ease-in-out, top 0.8s ease-in-out;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 15px #00ffff;
+        }
+        /* Nav link styling */
+        nav a {
+            color: #00ffff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover {
+            text-shadow: 0 0 10px #00ffff;
+        }
+        /* Header style */
+        header h1 {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        /* Footer text */
+        footer {
+            margin-top: 50px;
+            color: #00ffff;
+            font-size: 14px;
+        }
+        /* Status message style */
+        #statusMsg {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        /* JARVIS-style loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        /* Text in the loading overlay */
+        #loadingText {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        /* Pulsing animation for loading text */
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+
+<!-- Everything we want the user to see in the body section -->
+<body>
+    <!-- JARVIS loading overlay -->
+    <div id="loadingOverlay">
+        <div id="loadingText">Initializing J.A.R.V.I.S Systems...</div>
+    </div>
+
+    <!-- Page header -->
+    <header>
+        <h1>Welcome to Ethan Mitchell's CSC102 Page</h1>
     </header>
 
-        <!-- Create a nav section to hold the menu -->
-        <nav>
-           <a href="Index.html">Home</a>
-           <br>
-           <a href="GameDesignBoards.html">Game Design Boards</a> 
-        </nav>     
+    <!-- Create a nav section to hold the menu -->
+    <nav>
+        <a href="Index.html">Home</a>
+        <br>
+        <a href="GameDesignBoards.html">Game Design Boards</a>
+    </nav>
 
-    <!-- This is a paragraph, default will have spacing before & after the "p" tags -->
+    <!-- Image paragraph -->
     <p>
         <img id="memeImage" src="PCCustomizationMeme.png" alt="PC Customization Meme" width="768" height="432">
     </p>
 
+    <!-- Control Buttons -->
+    <!-- Start and Stop buttons placed in a form -->
+    <form id="controlForm" onsubmit="return false">
+        <!-- Start button -->
+        <button id="startBtn" type="submit">Start</button>
+
+        <!-- Stop button -->
+        <button id="stopBtn" type="submit" disabled>Stop</button>
+
+        <!-- Display area for validation or status messages -->
+        <div id="statusMsg"></div>
+    </form>
+
+    <!-- Footer section -->
     <footer>
         Ethan Mitchell<br>
         University of Advancing Technology<br>
-        2625 W Baseline Rd,<br> 
+        2625 W Baseline Rd,<br>
         Tempe, AZ 85283
     </footer>
 
+    <!-- JavaScript starts below -->
+    <script>
+        // Define variables for buttons, image, message box, and overlay
+        const startBtn = document.getElementById("startBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const meme = document.getElementById("memeImage");
+        const statusMsg = document.getElementById("statusMsg");
+        const loadingOverlay = document.getElementById("loadingOverlay");
+
+        // Timer variable to control movement
+        let moveInterval;
+
+        // Show loading screen then hide after delay
+        window.onload = function () {
+            setTimeout(() => {
+                loadingOverlay.style.display = "none";
+            }, 2200);
+        };
+
+        // Helper function to get a random position
+        function getRandomPosition(max) {
+            return Math.floor(Math.random() * (max - 100));
+        }
+
+        // Function to move the meme image around randomly
+        function moveMemeImage() {
+            const maxWidth = window.innerWidth;
+            const maxHeight = window.innerHeight;
+            meme.style.left = getRandomPosition(maxWidth) + "px";
+            meme.style.top = getRandomPosition(maxHeight) + "px";
+        }
+
+        // Function that starts the meme movement
+        function startMovement() {
+            // Update buttons
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+
+            // Start moving image every 800ms
+            moveInterval = setInterval(moveMemeImage, 800);
+
+            // Update user status
+            statusMsg.innerHTML = "<strong>Meme is moving!</strong>";
+        }
+
+        // Function that stops the meme movement
+        function stopMovement() {
+            // Update buttons
+            stopBtn.disabled = true;
+            startBtn.disabled = false;
+
+            // Stop movement
+            clearInterval(moveInterval);
+
+            // Update user status
+            statusMsg.innerHTML = "<em>Meme movement stopped.</em>";
+        }
+
+        // Use onclick properties to wire the buttons
+        startBtn.onclick = function() {
+            startMovement();
+        };
+
+        stopBtn.onclick = function() {
+            stopMovement();
+        };
+    </script>
 </body>
 
 <!-- Closing html tag needed at the end of every file -->
