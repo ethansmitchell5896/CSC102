@@ -1,0 +1,134 @@
+<!-- 
+  Name: Ethan [Replace with your full name if needed]
+  File: strings.html
+  Purpose: Combine name, validate length and zip code, then show a secret message
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secret Message Validator</title>
+
+    <!-- Use Google Fonts for a futuristic and clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
+    <!-- Internal CSS styling -->
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 0 20px cyan;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 0.7rem;
+            width: 80%;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        input[type="submit"] {
+            padding: 0.7rem 2rem;
+            background: #00ffff;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #result {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+        }
+
+        img {
+            margin-top: 2rem;
+            width: 150px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px cyan;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Page Header -->
+    <h1>Enter Your Info for a Secret Message</h1>
+
+    <!-- User input form -->
+    <form id="infoForm" onsubmit="validateInputs(event)">
+        <!-- Input for First Name -->
+        <input type="text" id="firstName" placeholder="First Name" required><br>
+
+        <!-- Input for Last Name -->
+        <input type="text" id="lastName" placeholder="Last Name" required><br>
+
+        <!-- Input for ZIP Code -->
+        <input type="text" id="zipCode" placeholder="ZIP Code (5 digits)" required><br>
+
+        <!-- Submit button -->
+        <input type="submit" value="Reveal Message">
+    </form>
+
+    <!-- Output section for validation or result -->
+    <div id="result"></div>
+
+    <!-- Fun visual element -->
+    <img src="https://i.nextmedia.com.au/Utils/ImageResizer.ashx?n=https%3A%2F%2Fi.nextmedia.com.au%2FNews%2Fbigstock-quantum_computing-145727582.jpg&h=420&w=748&c=0&s=0" alt="Quantum Secret">
+
+    <!-- JavaScript for form validation and message display -->
+    <script>
+        // Main function to validate user input and display message
+        function validateInputs(event) {
+            event.preventDefault(); // Stop the form from refreshing the page
+
+            // Get user inputs
+            const firstName = document.getElementById("firstName").value.trim();  // Get first name and remove extra spaces
+            const lastName = document.getElementById("lastName").value.trim();    // Get last name and remove extra spaces
+            const zip = document.getElementById("zipCode").value.trim();          // Get zip code
+
+            // Combine first and last name with a space
+            const fullName = firstName + " " + lastName;
+
+            // Reference to output area
+            const output = document.getElementById("result");
+
+            // Validate name length (must be <= 20 characters)
+            if (fullName.length > 20) {
+                output.innerHTML = "⚠️ Name too long! Must be 20 characters or fewer.";
+                return; // Exit the function early
+            }
+
+            // Validate ZIP code format (must be exactly 5 digits)
+            if (!/^\d{5}$/.test(zip)) {
+                output.innerHTML = "⚠️ Invalid ZIP Code! Enter exactly 5 digits.";
+                return; // Exit the function early
+            }
+
+            // If both validations pass, show the secret message
+            output.innerHTML = `✅ Welcome, <strong>${fullName}</strong> from <strong>${zip}</strong>!<br><br>
+            🧬 Secret Message: <em>"The future is coded in possibility."</em>`;
+        }
+    </script>
+
+</body>
+</html>

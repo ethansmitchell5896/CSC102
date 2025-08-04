@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS' QPE - Quantum Slot Interface</title>
+    
+    <!-- Import Orbitron and Roboto Mono fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Link to external JavaScript file -->
+    <script src="code.js" defer></script>
+
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: #0a0a0a;
+            color: #00bcd4;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Circuit Board Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 50%, rgba(0, 188, 212, 0.03) 50%),
+                linear-gradient(rgba(0, 188, 212, 0.03) 50%, transparent 50%),
+                radial-gradient(circle at 25% 25%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 153, 204, 0.1) 0%, transparent 50%);
+            background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+            animation: circuitFlow 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes circuitFlow {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 40px 40px, -40px -40px, 200px 200px, -200px -200px; }
+        }
+
+        /* Header Styles */
+        .ai-header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #1a237e 0%, #0a0a0a 50%, #1a237e 100%);
+            border-bottom: 2px solid #00bcd4;
+            box-shadow: 
+                0 0 20px rgba(0, 188, 212, 0.3),
+                inset 0 1px 0 rgba(0, 188, 212, 0.2);
+            position: relative;
+        }
+
+        .ai-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 188, 212, 0.1) 50%, 
+                transparent);
+            animation: scanLine 3s ease-in-out infinite;
+        }
+
+        @keyframes scanLine {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .ai-logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #00bcd4;
+            text-shadow: 
+                0 0 10px #00bcd4,
+                0 0 20px #00bcd4,
+                0 0 30px #00bcd4;
+            margin-bottom: 0.5rem;
+            letter-spacing: 4px;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { 
+                text-shadow: 
+                    0 0 10px #00bcd4,
+                    0 0 20px #00bcd4,
+                    0 0 30px #00bcd4;
+            }
+            100% { 
+                text-shadow: 
+                    0 0 20px #00bcd4,
+                    0 0 30px #00bcd4,
+                    0 0 40px #00bcd4,
+                    0 0 50px #0099cc;
+            }
+        }
+
+        .ai-subtitle {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.2rem;
+            color: #0099cc;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Main Container */
+        .game-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        /* Slot Machine Section */
+        .slot-machine-section {
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.2), rgba(10, 10, 10, 0.8));
+            border: 2px solid #00bcd4;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 
+                0 0 30px rgba(0, 188, 212, 0.3),
+                inset 0 1px 0 rgba(0, 188, 212, 0.1);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .slot-machine-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00bcd4, #0099cc, #1a237e, #00bcd4);
+            border-radius: 15px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .slot-machine-title {
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00bcd4;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px #00bcd4;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* HUD-Style Slot Display */
+        .slot-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00bcd4;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 188, 212, 0.2),
+                0 0 20px rgba(0, 188, 212, 0.4);
+            position: relative;
+        }
+
+        .slot-display::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00bcd4, transparent);
+            animation: scanHorizontal 2s ease-in-out infinite;
+        }
+
+        @keyframes scanHorizontal {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .slot-reels {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .slot-reel {
+            flex: 1;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(0, 0, 0, 0.8));
+            border: 2px solid #0099cc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #00bcd4;
+            font-family: 'Orbitron', monospace;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 188, 212, 0.3),
+                0 0 15px rgba(0, 188, 212, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .slot-reel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 188, 212, 0.1) 50%, transparent 70%);
+            border-radius: 6px;
+            animation: reelGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes reelGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
+        }
+
+        .slot-reel:hover {
+            box-shadow: 
+                inset 0 0 20px rgba(0, 188, 212, 0.4),
+                0 0 25px rgba(0, 188, 212, 0.6);
+        }
+
+        /* HUD-Style Results Display */
+        #slotResults {
+            background: rgba(0, 188, 212, 0.1);
+            border: 1px solid #00bcd4;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            font-family: 'Roboto Mono', monospace;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0, 188, 212, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* AI Betting Interface */
+        .betting-form {
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.2), rgba(0, 0, 0, 0.8));
+            border: 2px solid #0099cc;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 
+                0 0 20px rgba(0, 153, 204, 0.3),
+                inset 0 1px 0 rgba(0, 188, 212, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 1.1rem;
+            color: #00bcd4;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .bet-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            font-family: 'Roboto Mono', monospace;
+            border: 2px solid #0099cc;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #00bcd4;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .bet-input:focus {
+            outline: none;
+            border-color: #00bcd4;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(0, 188, 212, 0.4);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .play-button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #00bcd4, #0099cc);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 
+                0 4px 15px rgba(0, 188, 212, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .play-button:hover {
+            background: linear-gradient(135deg, #1de9b6, #00bcd4);
+            box-shadow: 
+                0 6px 20px rgba(0, 188, 212, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        .play-button:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 2px 10px rgba(0, 188, 212, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* AI Sidebar - HUD Panels */
+        .game-info-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.3), rgba(0, 0, 0, 0.8));
+            border: 2px solid #0099cc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 
+                0 0 20px rgba(0, 153, 204, 0.3),
+                inset 0 1px 0 rgba(0, 188, 212, 0.1);
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            background: #00bcd4;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00bcd4;
+            animation: statusBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .info-title {
+            font-size: 1.2rem;
+            color: #00bcd4;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Balance Display - HUD Style */
+        #balance {
+            font-size: 2rem;
+            color: #1de9b6;
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px #1de9b6;
+            animation: balanceGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes balanceGlow {
+            0% { 
+                text-shadow: 0 0 10px #1de9b6;
+            }
+            100% { 
+                text-shadow: 
+                    0 0 20px #1de9b6,
+                    0 0 30px #1de9b6;
+            }
+        }
+
+        /* Messages Display - AI Console Style */
+        #messages {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid #0099cc;
+            border-radius: 5px;
+            padding: 1rem;
+            min-height: 100px;
+            color: #00bcd4;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+        }
+
+        /* AI Tech Decorative Elements */
+        .ai-decoration {
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .tech-icons {
+            font-size: 1.5rem;
+            color: #0099cc;
+            margin: 0 1rem;
+            animation: techPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes techPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* Game Rules - Tech Style */
+        .rules-content {
+            color: #0099cc;
+            line-height: 1.6;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.95rem;
+        }
+
+        .rules-content p {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .rules-content p::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #00bcd4;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+
+            .ai-logo {
+                font-size: 2rem;
+            }
+
+            .slot-reels {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .slot-reel {
+                height: 80px;
+                font-size: 2rem;
+            }
+
+            .betting-form {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Additional AI Effects */
+        .hologram-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hologram-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(0, 188, 212, 0.03) 50%, 
+                transparent 100%);
+            animation: holoScan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes holoScan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- AI Assistant Header Section -->
+    <header class="ai-header">
+        <!-- JARVIS Logo and Branding -->
+        <h1 class="ai-logo">◊ J.A.R.V.I.S.’ Q.P.E. ◊</h1>
+        <p class="ai-subtitle">Quantum Probability Engine</p>
+        
+        <!-- Tech Decorative Elements -->
+        <div class="ai-decoration">
+            <span class="tech-icons">⚡</span>
+            <span class="tech-icons">🔧</span>
+            <span class="tech-icons">💎</span>
+            <span class="tech-icons">🔋</span>
+            <span class="tech-icons">⚙️</span>
+            <span class="tech-icons">◈</span>
+        </div>
+    </header>
+
+    <!-- Main AI Interface Container -->
+    <main class="game-container">
+        <!-- Left Column: Quantum Slot Interface -->
+        <section class="slot-machine-section hologram-effect">
+            <!-- AI Slot Machine Title -->
+            <h2 class="slot-machine-title">⬢ Quantum Slot Interface ⬢</h2>
+            
+            <!-- HUD-Style Slot Display Area -->
+            <div class="slot-display">
+                <!-- Three AI Slot Reels Container -->
+                <div class="slot-reels">
+                    <!-- Individual AI Slot Reel 1 -->
+                    <div class="slot-reel" id="reel1">
+                        ⚡
+                    </div>
+                    
+                    <!-- Individual AI Slot Reel 2 -->
+                    <div class="slot-reel" id="reel2">
+                        🔧
+                    </div>
+                    
+                    <!-- Individual AI Slot Reel 3 -->
+                    <div class="slot-reel" id="reel3">
+                        💎
+                    </div>
+                </div>
+                
+                <!-- AI Slot Results Display Area - Connected to external JavaScript -->
+                <div id="slotResults">
+                    ⬢ Initialize quantum probability matrix ⬢
+                </div>
+            </div>
+            
+            <!-- AI Betting Interface Section -->
+            <form class="betting-form" id="gameForm" method="post">
+                <!-- Form Group for Energy Credit Input -->
+                <div class="form-group">
+                    <!-- Label for Energy Credit Input -->
+                    <label for="betAmount" class="form-label">⚛︎ Energy Credits:</label>
+                    
+                    <!-- Energy Credit Input Field - Connected to external JavaScript -->
+                    <input 
+                        type="number" 
+                        id="betAmount" 
+                        name="betAmount" 
+                        class="bet-input" 
+                        min="1" 
+                        max="100000" 
+                        step="1" 
+                        placeholder="Enter energy credits (1-100000)"
+                        required
+                    />
+                </div>
+                
+                <!-- Execute Quantum Calculation Button - Form Submit Button -->
+                <button type="submit" class="play-button">
+                    ⬢ Execute Quantum Calculation ⬢
+                </button>
+            </form>
+        </section>
+
+        <!-- Right Column: AI System Status Sidebar -->
+        <aside class="game-info-sidebar">
+            <!-- Energy Credits Panel -->
+            <div class="info-panel hologram-effect">
+                <!-- Energy Credits Section Title -->
+                <h3 class="info-title">⚛︎ Energy Credits</h3>
+                
+                <!-- Energy Credits Display Area - Connected to external JavaScript -->
+                <div id="balance">
+                    10,000
+                </div>
+            </div>
+            
+            <!-- AI Status Messages Panel -->
+            <div class="info-panel hologram-effect">
+                <!-- Status Messages Section Title -->
+                <h3 class="info-title">⚛︎ Energy Status</h3>
+                
+                <!-- Status Messages Display Area - Connected to external JavaScript -->
+                <div id="messages">
+                    QUANTUM ENGINE ONLINE<br><br>
+                    Awaiting Quantum Calculation Input.<br><br> 
+                    Good luck, sir. 🤖
+                </div>
+            </div>
+            
+            <!-- Probability Matrix Panel -->
+            <div class="info-panel hologram-effect">
+                <!-- Probability Rules Section Title -->
+                <h3 class="info-title">⬢ Probability Matrix</h3>
+                
+                <!-- AI Probability Rules Information -->
+                <div class="rules-content">
+                    <p><strong>⚡ Triple Match:</strong> 10x energy boost</p>
+                    <p><strong>🔧 Double Tech:</strong> 3x efficiency</p>
+                    <p><strong>💎 Double Quantum:</strong> 2x amplification</p>
+                    <p><strong>◈ Any Pair:</strong> 1.5x enhancement</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- AI Footer Status -->
+    <footer style="text-align: center; padding: 2rem; color: #0099cc;">
+        <div class="ai-decoration">
+            <span class="tech-icons">◈</span>
+            <span style="color: #00bcd4; font-size: 1.1rem; font-family: 'Orbitron', monospace;">QUANTUM SYSTEMS OPERATIONAL</span>
+            <span class="tech-icons">◈</span>
+        </div>
+    </footer>
+
+    <!-- JARVIS AI Slot Machine JavaScript -->
+    <script>
+        // JARVIS AI Slot Machine Game JavaScript
+        // All functionality for the AI-themed slot game with comprehensive commenting
+
+        // -- INITIALIZATION --
+
+        // Store AI/tech-themed symbols used for quantum slots
+        const quantumSymbols = ['⚡', '🔧', '💎', '🔋', '⚙️', '◈'];
+
+        // Store player energy credits globally (will start at 10,000)
+        let energyCredits = 10000;
+
+        // Get references to all critical DOM elements by ID
+        // These elements exist in the HTML and are used for output only
+        const reel1 = document.getElementById('reel1');         // Left quantum reel display
+        const reel2 = document.getElementById('reel2');         // Middle quantum reel display
+        const reel3 = document.getElementById('reel3');         // Right quantum reel display
+        const quantumResults = document.getElementById('slotResults'); // Quantum result message
+        const creditsDisplay = document.getElementById('balance');      // Energy credits display
+        const statusBox = document.getElementById('messages');          // AI status message box
+
+        // Reference to AI betting interface and input field
+        const aiForm = document.getElementById('gameForm');          // AI form element
+        const creditInput = document.getElementById('betAmount');    // Input field for energy credit amount
+
+        // When page loads, update the initial energy credits display
+        creditsDisplay.innerHTML = energyCredits.toLocaleString();
+
+        // -- CORE AI GAME FUNCTION --
+        // This function is triggered when the form is submitted (quantum calculation executed)
+        aiForm.onsubmit = function(event) {
+            // Prevent form from causing a page reload
+            event.preventDefault();
+
+            // Get and validate the energy credit amount (must be integer)
+            let creditBet = parseInt(creditInput.value);
+
+            // Validation: check credit validity and if player has enough energy
+            if (isNaN(creditBet) || creditBet < 1 || creditBet > 100000) {
+                // Show error message if credit amount is invalid
+                statusBox.innerHTML = 'INVALID INPUT: Enter valid energy credits between 1 and 100000.';
+                return; // Stop execution here
+            }
+            if (creditBet > energyCredits) {
+                // Show error if credit bet exceeds available energy
+                statusBox.innerHTML = "INSUFFICIENT ENERGY: Not enough credits for this quantum calculation!";
+                return;
+            }
+
+            // If all validations pass, execute the quantum slot machine
+            executeQuantumSlot(creditBet); // Call main quantum slot function with user's credit bet
+        };
+
+        // -- QUANTUM SLOT MACHINE LOGIC FUNCTION --
+        // Implements the actual quantum slot machine spin and probability calculation
+        function executeQuantumSlot(creditBet) {
+            // Deduct energy credits from player balance immediately
+            energyCredits -= creditBet;
+
+            // Execute quantum spin: generate three random integers (0-5) for the array of symbols
+            const quantumIdx1 = Math.floor(Math.random() * quantumSymbols.length);
+            const quantumIdx2 = Math.floor(Math.random() * quantumSymbols.length);
+            const quantumIdx3 = Math.floor(Math.random() * quantumSymbols.length);
+
+            // Update quantum reel visuals with AI symbols
+            reel1.innerHTML = quantumSymbols[quantumIdx1];
+            reel2.innerHTML = quantumSymbols[quantumIdx2];
+            reel3.innerHTML = quantumSymbols[quantumIdx3];
+
+            // Collect quantum results into an array to make probability comparisons easier
+            const quantumResults = [quantumSymbols[quantumIdx1], quantumSymbols[quantumIdx2], quantumSymbols[quantumIdx3]];
+
+            // Calculate energy reward by calling the probability logic, passing the result symbols and credit bet
+            const energyReward = calculateQuantumReward(quantumResults, creditBet);
+
+            // If energy reward is earned, add to player's energy credits!
+            if (energyReward > 0) {
+                energyCredits += energyReward;
+                quantumResults.innerHTML = `⚡ QUANTUM SUCCESS! Energy gained: ${energyReward} credits! 🤖`;
+                statusBox.innerHTML = getQuantumOutcome(quantumResults, energyReward, creditBet);
+            } else {
+                quantumResults.innerHTML = 'Quantum calculation failed. Recalibrating... 🤖';
+                statusBox.innerHTML = getQuantumOutcome(quantumResults, 0, creditBet);
+            }
+
+            // Update player's displayed energy credits on the interface
+            creditsDisplay.innerHTML = energyCredits.toLocaleString();
+        }

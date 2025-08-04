@@ -1,0 +1,30 @@
+/* Body Styling */
+body {
+  background-color: #f0f0f0;
+  color: #333333;
+}
+
+/* Navigation Styling */
+nav {
+  height: 600px;
+  width: 200px;
+  float: left;
+  padding: 5px;
+  line-height: 30px;
+}
+
+/* Footer Styling */
+footer {
+  text-align: center;
+  margin-right: 200px;
+}
+
+/* Meme Image Styling */
+#memeImage {
+  margin-right: 200px;
+}
+
+/* Header Styling */
+header {
+  text-align: center;
+}
