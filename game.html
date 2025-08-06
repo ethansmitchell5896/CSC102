@@ -785,8 +785,11 @@
             <span class="tech-icons">◈</span>
         </div>
     </footer>
-
+    
+    <!-- JARVIS AI Slot Machine JavaScript -->
     <script>
+        
+        // JARVIS loading overlay functionality
         const loadingOverlay = document.getElementById("loadingOverlay");
 
         window.onload = function () {
@@ -794,11 +797,7 @@
                 loadingOverlay.style.display = "none";
             }, 2200); // Delay in milliseconds
         };
-    </script>
-    
-    <!-- JARVIS AI Slot Machine JavaScript -->
-    <script>
-        
+
         // JARVIS AI Slot Machine Game JavaScript
         // All functionality for the AI-themed slot game with comprehensive commenting
 
@@ -815,7 +814,7 @@
         const reel1 = document.getElementById('reel1');         // Left quantum reel display
         const reel2 = document.getElementById('reel2');         // Middle quantum reel display
         const reel3 = document.getElementById('reel3');         // Right quantum reel display
-        const quantumResults = document.getElementById('slotResults'); // Quantum result message
+        const quantumResultsBox = document.getElementById('slotResults'); // Quantum result message
         const creditsDisplay = document.getElementById('balance');      // Energy credits display
         const statusBox = document.getElementById('messages');          // AI status message box
 
@@ -867,20 +866,24 @@
             reel2.innerHTML = quantumSymbols[quantumIdx2];
             reel3.innerHTML = quantumSymbols[quantumIdx3];
 
-            // Collect quantum results into an array to make probability comparisons easier
-            const quantumResults = [quantumSymbols[quantumIdx1], quantumSymbols[quantumIdx2], quantumSymbols[quantumIdx3]];
+            // Collect quantum spin results into an array to make probability comparisons easier
+            const quantumSpinResult = [
+                quantumSymbols[quantumIdx1], 
+                quantumSymbols[quantumIdx2], 
+                quantumSymbols[quantumIdx3]
+            ];
 
             // Calculate energy reward by calling the probability logic, passing the result symbols and credit bet
-            const energyReward = calculateQuantumReward(quantumResults, creditBet);
+            const energyReward = calculateQuantumReward(quantumSpinResult, creditBet);
 
             // If energy reward is earned, add to player's energy credits!
             if (energyReward > 0) {
                 energyCredits += energyReward;
-                quantumResults.innerHTML = `⚡ QUANTUM SUCCESS! Energy gained: ${energyReward} credits! 🤖`;
-                statusBox.innerHTML = getQuantumOutcome(quantumResults, energyReward, creditBet);
+                quantumResultsBox.innerHTML = `⚡ QUANTUM SUCCESS! Energy gained: ${energyReward} credits! 🤖`;
+                statusBox.innerHTML = getQuantumOutcome(quantumSpinResult, energyReward, creditBet);
             } else {
-                quantumResults.innerHTML = 'Quantum calculation failed. Recalibrating... 🤖';
-                statusBox.innerHTML = getQuantumOutcome(quantumResults, 0, creditBet);
+                quantumResultsBox.innerHTML = 'Quantum calculation failed. Recalibrating... 🤖';
+                statusBox.innerHTML = getQuantumOutcome(quantumSpinResult, 0, creditBet);
             }
 
             // Update player's displayed energy credits on the interface
