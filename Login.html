@@ -1,0 +1,256 @@
+<!-- 
+  Name: Ethan Mitchell
+  File: Login.html
+  Purpose: Combine name, validate length and zip code, then show a secret message
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secret Message Validator</title>
+
+    <!-- Import Orbitron and Roboto Mono fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Internal CSS styling -->
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 50%, rgba(0, 188, 212, 0.03) 50%),
+                linear-gradient(rgba(0, 188, 212, 0.03) 50%, transparent 50%),
+                radial-gradient(circle at 25% 25%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 153, 204, 0.1) 0%, transparent 50%);
+            background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+            animation: circuitFlow 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 0 20px cyan;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 0.7rem;
+            width: 80%;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        input[type="submit"] {
+            padding: 0.7rem 2rem;
+            background: #00ffff;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #result {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+        }
+
+        img {
+            margin-top: 2rem;
+            width: 150px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px cyan;
+        }
+
+        /* JARVIS-style loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        /* Text in the loading overlay */
+        #loadingText {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        /* Pulsing animation for loading text */
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* === JARVIS Vertical Sidebar Navigation === */
+        .jarvis-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.05), rgba(10, 10, 10, 0.95));
+            border-right: 2px solid #00bcd4;
+            padding-top: 120px; /* space for header */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 4px 0 10px rgba(0, 188, 212, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .jarvis-sidebar a {
+            display: block;
+            width: 80%;
+            margin: 10px 0;
+            padding: 12px 16px;
+            color: #00bcd4;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.95rem;
+            text-align: center;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .jarvis-sidebar a:hover {
+            background: rgba(0, 188, 212, 0.1);
+            border-color: #00bcd4;
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.3);
+            color: #1de9b6;
+            text-shadow: 0 0 6px #00bcd4;
+        }
+
+        /* Push main container over to make space for sidebar */
+        .game-container {
+            margin-left: 240px;
+        }
+
+        /* Make header stretch across full width */
+        .ai-header {
+            margin-left: 220px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- JARVIS loading overlay -->
+    <div id="loadingOverlay">
+        <div id="loadingText">Initializing J.A.R.V.I.S Systems...</div>
+    </div>
+    
+    <!-- Page Header -->
+    <h1>Enter Your Info for a Secret Message</h1>
+
+    <!-- AI Navigation Bar -->
+    <nav class="jarvis-sidebar">
+        <a href="Index.html">Home</a>
+        <a href="GameDesignBoards.html">Game Design Board</a>
+        <a href="game.html">Game</a>
+        <a href="login.html">Login</a>
+        <a href="palindrome.html">Palindrome</a>
+    </nav>
+
+    <!-- User input form -->
+    <form id="infoForm" onsubmit="validateInputs(event)">
+        <!-- Input for First Name -->
+        <input type="text" id="firstName" placeholder="First Name" required><br>
+
+        <!-- Input for Last Name -->
+        <input type="text" id="lastName" placeholder="Last Name" required><br>
+
+        <!-- Input for ZIP Code -->
+        <input type="text" id="zipCode" placeholder="ZIP Code (5 digits)" required><br>
+
+        <!-- Submit button -->
+        <input type="submit" value="Reveal Message">
+    </form>
+
+    <!-- Output section for validation or result -->
+    <div id="result"></div>
+
+    <!-- Fun visual element -->
+    <img src="https://i.nextmedia.com.au/Utils/ImageResizer.ashx?n=https%3A%2F%2Fi.nextmedia.com.au%2FNews%2Fbigstock-quantum_computing-145727582.jpg&h=420&w=748&c=0&s=0" alt="Quantum Secret">
+
+    <!-- JavaScript for form validation and message display -->
+    <script>
+        
+        // Show loading screen then hide after delay
+        window.onload = function () {
+            setTimeout(() => {
+                loadingOverlay.style.display = "none";
+            }, 2200);
+        };
+        
+        // Main function to validate user input and display message
+        function validateInputs(event) {
+            event.preventDefault(); // Stop the form from refreshing the page
+
+            // Get user inputs
+            const firstName = document.getElementById("firstName").value.trim();  // Get first name and remove extra spaces
+            const lastName = document.getElementById("lastName").value.trim();    // Get last name and remove extra spaces
+            const zip = document.getElementById("zipCode").value.trim();          // Get zip code
+
+            // Combine first and last name with a space
+            const fullName = firstName + " " + lastName;
+
+            // Reference to output area
+            const output = document.getElementById("result");
+
+            // Validate name length (must be <= 20 characters)
+            if (fullName.length > 20) {
+                output.innerHTML = "⚠️ Name too long! Must be 20 characters or fewer.";
+                return; // Exit the function early
+            }
+
+            // Validate ZIP code format (must be exactly 5 digits)
+            if (!/^\d{5}$/.test(zip)) {
+                output.innerHTML = "⚠️ Invalid ZIP Code! Enter exactly 5 digits.";
+                return; // Exit the function early
+            }
+
+            // If both validations pass, show the secret message
+            output.innerHTML = `✅ Welcome, <strong>${fullName}</strong> from <strong>${zip}</strong>!<br><br>
+            🧬 Secret Message: <em>"The future is coded in possibility."</em>`;
+        }
+    </script>
+
+</body>
+</html>

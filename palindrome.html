@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Checker</title>
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Import Orbitron and Roboto Mono fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+        <!-- Internal style for JARVIS-styled background and fonts -->
+    <style>
+        
+        /* JARVIS-style loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Text in the loading overlay */
+        #loadingText {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        /* Pulsing animation for loading text */
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        
+        /* Main background, text, and font style */
+        body {
+            background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+            color: #00ffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 50%, rgba(0, 188, 212, 0.03) 50%),
+                linear-gradient(rgba(0, 188, 212, 0.03) 50%, transparent 50%),
+                radial-gradient(circle at 25% 25%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 153, 204, 0.1) 0%, transparent 50%);
+            background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+            animation: circuitFlow 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Nav link styling */
+        nav a {
+            color: #00ffff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+        nav a:hover {
+            text-shadow: 0 0 10px #00ffff;
+        }
+        /* Header style */
+        header h1 {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        /* Footer text */
+        footer {
+            margin-top: 50px;
+            color: #00ffff;
+            font-size: 14px;
+        }
+        /* Status message style */
+        #statusMsg {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        /* JARVIS-style loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        /* Text in the loading overlay */
+        #loadingText {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        /* Pulsing animation for loading text */
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* === JARVIS Vertical Sidebar Navigation === */
+        .jarvis-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.05), rgba(10, 10, 10, 0.95));
+            border-right: 2px solid #00bcd4;
+            padding-top: 120px; /* space for header */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 999;
+            box-shadow: 4px 0 10px rgba(0, 188, 212, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .jarvis-sidebar a {
+            display: block;
+            width: 80%;
+            margin: 10px 0;
+            padding: 12px 16px;
+            color: #00bcd4;
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.95rem;
+            text-align: center;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            letter-spacing: 1px;
+        }
+
+        .jarvis-sidebar a:hover {
+            background: rgba(0, 188, 212, 0.1);
+            border-color: #00bcd4;
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.3);
+            color: #1de9b6;
+            text-shadow: 0 0 6px #00bcd4;
+        }
+
+        /* Push main container over to make space for sidebar */
+        .game-container {
+            margin-left: 240px;
+        }
+
+        /* Make header stretch across full width */
+        .ai-header {
+            margin-left: 220px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #1de9b6;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 8px #00ffff;
+        }
+
+        .typing-result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #1de9b6;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px #00ffff;
+            border-top: 1px solid #00bcd4;
+            padding-top: 10px;
+            animation: glowFade 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowFade {
+            from { text-shadow: 0 0 5px #00bcd4; }
+            to { text-shadow: 0 0 15px #1de9b6; }
+        }
+
+        .palindrome-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Optional: centers vertically if parent has height */
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        #frmPalindrome {
+            background: rgba(0, 188, 212, 0.05);
+            border: 1px solid #00bcd4;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.2);
+            text-align: center;
+        }
+
+        #frmPalindrome input[type="text"] {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: 1px solid #00bcd4;
+            border-radius: 6px;
+            background: #111;
+            color: #00ffff;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        #frmPalindrome input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #00bcd4;
+            color: #000;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #frmPalindrome input[type="submit"]:hover {
+            background-color: #1de9b6;
+            box-shadow: 0 0 10px #00bcd4;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <!-- JARVIS loading overlay -->
+    <div id="loadingOverlay">
+        <div id="loadingText">Initializing J.A.R.V.I.S Systems...</div>
+    </div>
+
+    <header>
+        <h1>Palindrome Checker</h1>
+        <!-- create a nav section to hold the menu -->
+           <!-- AI Navigation Bar -->
+        <nav class="jarvis-sidebar">
+            <a href="Index.html">Home</a>
+            <a href="GameDesignBoards.html">Game Design Board</a>
+            <a href="game.html">Game</a>
+            <a href="login.html">Login</a>
+            <a href="palindrome.html">Palindrome</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="palindrome-wrapper">
+            <!-- basics of setting up the form so that when the form is submitted we will check if the word is the same forward and back -->
+            <form name="frmPalindrome" id="frmPalindrome" onsubmit="checkPalindrome(event);">
+                <label for="txtWord">Enter a word or phrase:</label><br><br>
+                <input type="text" id="txtWord" name="txtWord"><br><br>
+                <input type="submit" value="Check Word">
+            </form>
+        </div>
+    </main>
+
+    <script>
+        
+        const loadingOverlay = document.getElementById("loadingOverlay");
+
+        window.onload = function () {
+            setTimeout(() => {
+                loadingOverlay.style.display = "none";
+            }, 2200); // Delay in milliseconds
+        };
+        
+        // Function to check if the input is a palindrome
+        function checkPalindrome(event) {
+            event.preventDefault();
+
+            const word = document.getElementById('txtWord').value.trim().toLowerCase();
+            const cleanedWord = word.replace(/[^a-z0-9]/g, '');
+            const reversedWord = cleanedWord.split('').reverse().join('');
+
+            const message = cleanedWord === reversedWord
+                ? `"${word}" is a palindrome!`
+                : `"${word}" is not a palindrome.`;
+
+            // Remove existing result if present
+            let existingResult = document.getElementById('result');
+            if (existingResult) existingResult.remove();
+
+            // Create result container
+            const result = document.createElement('div');
+            result.id = 'result';
+            result.style.whiteSpace = 'pre'; // preserve spacing
+            result.classList.add('typing-result'); // add class for styling
+            document.getElementById('frmPalindrome').after(result);
+
+            // Typing animation function
+            let i = 0;
+            function typeChar() {
+                if (i < message.length) {
+                    result.textContent += message.charAt(i);
+                    i++;
+                    setTimeout(typeChar, 35); // adjust speed here (ms per character)
+                }
+            }
+
+            typeChar();
+        }
+    </script>
+</body>
+</html>
